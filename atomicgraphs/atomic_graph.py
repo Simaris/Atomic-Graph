@@ -77,15 +77,13 @@ class AtomicGraphFactory:
         return False
 
     def _run(self):
-        node = next(iter(self.graph.all_nodes()), False)
-        while(node):
-            self._analyse_node(node)
-            node = self._next_node()
-            while(node):  # empty lists are falsy
+        for subjectsOrObjects in [self.graph.subjects(), self.graph.objects()]:
+            for node in subjectsOrObjects:
                 self._analyse_node(node)
                 node = self._next_node()
-            # in case the graph has disconnected parts
-            node = next(iter(self.graph.all_nodes()), False)
+                while(node):  # empty lists are falsy
+                    self._analyse_node(node)
+                    node = self._next_node()
 
 
 class AtomicGraph(rdflib.Graph):
